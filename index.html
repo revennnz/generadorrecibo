@@ -1,13 +1,11 @@
 <html><head><base href="https://websim.generadorrecibos.com/">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Generador de Recibos - Modo Oscuro</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#4a90e2">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Recibos">
-<link rel="apple-touch-icon" href="/icon-192x192.png">
+<title>Generador de Recibos</title>
+<link rel="icon" sizes="192x192" href="https://i.imgur.com/C9N75S2.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="https://i.imgur.com/C9N75S2.png" type="image/x-icon"/>
+<link rel="apple-touch-icon" href="https://i.imgur.com/C9N75S2.png" type="image/x-icon"/>
+<link rel="manifest" href="manifest.json">
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -361,14 +359,12 @@
     }
 
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then((registration) => {
-            console.log('Service Worker registered successfully:', registration.scope);
-          })
-          .catch((error) => {
-            console.log('Service Worker registration failed:', error);
-          });
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
       });
     }
   </script>
