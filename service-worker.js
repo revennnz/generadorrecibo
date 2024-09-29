@@ -1,26 +1,16 @@
-const CACHE_NAME = 'recibos-cache-v1';
-const urlsToCache = [
-  '/index.html',
-  '/manifest.json',
-  'https://i.imgur.com/C9N75S2.png',
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-  );
+self.addEventListener('install', event => {
+  console.log('Service Worker: Instalado');
+  // Aquí puedes agregar la lógica para precachear recursos
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('activate', event => {
+  console.log('Service Worker: Activado');
+});
+
+self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
+    })
   );
 });
