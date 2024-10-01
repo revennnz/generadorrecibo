@@ -1,4 +1,4 @@
-const CACHE_NAME = 'recibos-cache-v1';
+const CACHE_NAME = 'recibos-cache-v2';
 const urlsToCache = [
   '',
   'https://genrecipe.pages.dev',
@@ -40,4 +40,11 @@ self.addEventListener('activate', event => {
       );
     })
   );
+});
+
+// Notificar al cliente sobre la actualización del Service Worker
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
