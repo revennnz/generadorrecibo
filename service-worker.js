@@ -1,8 +1,8 @@
-const CACHE_NAME = 'gym-cache-v1'; 
+const CACHE_NAME = 'gym-cache-v3';
 const urlsToCache = [
   '',
   '/',
-  'manifest.json', 
+  'manifest.json',
   'https://i.imgur.com/St2wFsJ.png' // Ícono de la app
 ];
 
@@ -17,18 +17,27 @@ self.addEventListener('install', event => {
 
 // Interceptar las solicitudes de red para devolver contenido de la caché
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      // Si hay una respuesta en caché, devuélvela; de lo contrario, haz la solicitud de red
-      return response || fetch(event.request).then(networkResponse => {
-        const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, responseClone);
+  // Solo cachear las solicitudes GET
+  if (event.request.method === 'GET') {
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        // Devuelve la respuesta de la caché o realiza la solicitud de red
+        return response || fetch(event.request).then(networkResponse => {
+          // Si la respuesta es válida, la almacenamos en caché
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return networkResponse;
         });
-        return networkResponse;
-      });
-    })
-  );
+      })
+    );
+  } else {
+    // Para las solicitudes que no son GET, simplemente hacer la solicitud de red
+    event.respondWith(fetch(event.request));
+  }
 });
 
 // Actualizar el caché cuando hay nuevos recursos
@@ -52,9 +61,4 @@ self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-});
-
-// Comprobar la actualización del Service Worker
-self.addEventListener('install', event => {
-  self.skipWaiting(); // Forzar a que el nuevo SW tome control inmediatamente
 });
