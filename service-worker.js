@@ -1,11 +1,9 @@
-const CACHE_NAME = 'recibos-cache-v2';
+const CACHE_NAME = 'gym-cache-v1'; 
 const urlsToCache = [
   '',
-  'https://genrecipe.pages.dev',
-  'manifest.json',
-  'https://i.imgur.com/C9N75S2.png', // Ícono de la app
-  'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', // Librerías externas
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
+  '/',
+  'manifest.json', 
+  'https://i.imgur.com/St2wFsJ.png' // Ícono de la app
 ];
 
 // Instalación del Service Worker y almacenamiento en caché de los recursos
@@ -21,7 +19,14 @@ self.addEventListener('install', event => {
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      // Si hay una respuesta en caché, devuélvela; de lo contrario, haz la solicitud de red
+      return response || fetch(event.request).then(networkResponse => {
+        const responseClone = networkResponse.clone();
+        caches.open(CACHE_NAME).then(cache => {
+          cache.put(event.request, responseClone);
+        });
+        return networkResponse;
+      });
     })
   );
 });
@@ -47,4 +52,9 @@ self.addEventListener('message', event => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+});
+
+// Comprobar la actualización del Service Worker
+self.addEventListener('install', event => {
+  self.skipWaiting(); // Forzar a que el nuevo SW tome control inmediatamente
 });
