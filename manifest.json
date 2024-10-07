@@ -20,5 +20,21 @@
     }
   ],
   "scope": "/",
-  "lang": "es-ES"
+  "lang": "es-ES",
+  "screenshots": [
+    {
+      "src": "https://bit.ly/sr1920x1080",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Captura de pantalla horizontal de la página principal"
+    },
+    {
+      "src": "https://bit.ly/sr1080x1920",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Captura de pantalla vertical de la página principal"
+    }
+  ]
 }
